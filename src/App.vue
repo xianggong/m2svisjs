@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
     <router-view></router-view>
   </div>
 </template>
@@ -11,6 +11,16 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style>
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+.container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1;
+}
 </style>

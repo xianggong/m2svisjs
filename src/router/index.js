@@ -10,7 +10,7 @@ export default new Router({
   routes: [
     { path: '/', name: 'Home', component: Home },
     { path: '/:tracename', name: 'Trace', component: Trace },
-    { path: '/:tracename/data', name: 'TraceData', component: TraceData },
+    { path: '/:tracename/rawdata', name: 'TraceData', component: TraceData },
   ],
-  mode: "history"
+  // mode: "history"
 })
