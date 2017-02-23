@@ -7,10 +7,20 @@ import TraceData from 'components/TraceData'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    { path: '/', name: 'Home', component: Home },
-    { path: '/:tracename', name: 'Trace', component: Trace },
-    { path: '/:tracename/rawdata', name: 'TraceData', component: TraceData },
-  ],
-  // mode: "history"
+  routes: [{
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/:tracename',
+      name: 'Trace',
+      component: Trace
+    },
+    {
+      path: '/:tracename/rawdata',
+      name: 'TraceData',
+      component: TraceData
+    }
+  ]
 })

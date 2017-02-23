@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="container">
-    <router-view></router-view>
-  </div>
+<div id="app" class="container">
+  <router-view></router-view>
+</div>
 </template>
 
 <script>
@@ -17,6 +17,7 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
 .container {
   height: 100%;
   display: flex;

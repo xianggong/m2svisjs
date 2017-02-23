@@ -1,42 +1,76 @@
 <template>
-  <div id="m2svis-trace-data" class="trace-data">
+<div id="m2svis-trace-data" class="trace-data">
 
+  <md-toolbar class="md-dense">
+    <h2 class="md-title" style="flex: 1">Raw Data: {{ tracename }}</h2>
+    <md-button @click.native="toggleRightSidenav">Settings</md-button>
+  </md-toolbar>
+
+  <md-sidenav class="md-right" ref="rightSidenav">
     <md-toolbar class="md-dense">
-      <h2 class="md-title" style="flex: 1">Raw Data: {{ tracename }}</h2>
-      <md-button class="md-icon-button">
-        <md-icon>filter_list</md-icon>
-      </md-button>
+      <div class="md-toolbar-container">
+        <h3 class="md-title">Settings</h3>
+      </div>
     </md-toolbar>
 
-    <md-table-card class="table-body">
-      <md-table>
-        <md-table-header>
-          <md-table-row>
-            <md-table-head v-model="cols" v-for="col in cols">
-              {{ col }}
-            </md-table-head>
-          </md-table-row>
-        </md-table-header>
-        <md-table-body>
-          <md-table-row v-model="rows" v-for="db in rows">
-            <md-table-cell v-for="val in db">
-              {{ val }}
-            </md-table-cell>
-          </md-table-row>
-        </md-table-body>
-      </md-table>
-    </md-table-card>
+    <md-list>
+      <!-- Column selector -->
+      <md-list-item>
+        <span>Column selector</span>
+        <md-list-expand>
+          <md-list-item v-for="col,idx in cols">
+            <md-checkbox :id="col" :name="col" v-model="colsVisibility[idx]">
+              {{col}}
+            </md-checkbox>
+          </md-list-item>
+          <md-list-item>
+            <md-button @click.native="setAllVisibility(false)">All clear</md-button>
+            <md-button @click.native="setAllVisibility(true)">Reset</md-button>
+          </md-list-item>
+        </md-list-expand>
+      </md-list-item>
+      <!-- Advanced filter -->
+      <md-list-item>
+        <span>Advanced filter</span>
+        <md-list-expand>
+          <md-list-item>
+            <md-input-container>
+              <md-input v-model="filterText" placeholder="Enter to submit filter"></md-input>
+            </md-input-container>
+          </md-list-item>
+        </md-list-expand>
+      </md-list-item>
+    </md-list>
 
-    <span class="pagination-padding-area"></span>
-    <md-table-card class="pagination">
-      <md-table-pagination md-size="30"
-        md-page="1"
-        md-label="Instruction per page"
-        :md-page-options="[30, 60, 90, 120]"
-        @pagination="getData">
-      </md-table-pagination>
-    </md-table-card>
-    </div>
+  </md-sidenav>
+
+
+  <md-table-card class="table-card">
+    <md-table>
+      <md-table-header>
+        <md-table-row>
+          <md-table-head v-model="cols" v-for="col in filteredCols()">
+            {{ col }}
+          </md-table-head>
+        </md-table-row>
+      </md-table-header>
+      <md-table-body>
+        <md-table-row v-model="rows" v-for="cells in rows">
+          <md-table-cell v-for="cell in filteredCells(cells)">
+            {{ cell }}
+          </md-table-cell>
+        </md-table-row>
+      </md-table-body>
+    </md-table>
+  </md-table-card>
+
+  <span class="pagination-padding-area"></span>
+  <md-table-card class="pagination">
+    <md-table-pagination md-size="30" md-page="1" md-label="Instruction per page" :md-page-options="[30, 60, 90, 120]" @pagination="getData">
+    </md-table-pagination>
+  </md-table-card>
+
+</div>
 </template>
 
 <script>
@@ -51,12 +85,14 @@ export default {
   data: function() {
     return {
       tracename: "",
-      cols:[],
-      rows:[],
+      cols: [],
+      colsVisibility: [],
+      rows: [],
       pagination: {
         page: 1,
         size: 30,
-      }
+      },
+      filterText: "",
     }
   },
   methods: {
@@ -75,20 +111,51 @@ export default {
       axios.get(url)
         .then(function(response) {
           // Get cols
-          var keys = [];
-          for(var k in response.data[0]) keys.push(k);
-          app.cols = keys;
+          app.cols.length = 0;
+          for (var k in response.data[0]) {
+            app.cols.push(k)
+            app.colsVisibility.push(true)
+          };
           // Get rows
           app.rows = response.data;
         })
-        .catch(function (err) {
+        .catch(function(err) {
           console.log(err)
         })
+    },
+    toggleRightSidenav() {
+      this.$refs.rightSidenav.toggle();
+    },
+    setAllVisibility: function(value) {
+      this.colsVisibility = Array(this.colsVisibility.length).fill(value);
+    },
+    filteredCols: function() {
+      var filteredCols = []
+      for (var i = 0; i < this.cols.length; i++) {
+        if (this.colsVisibility[i]) {
+          filteredCols.push(this.cols[i])
+        }
+      }
+      return filteredCols;
+    },
+    filteredCells: function(cells) {
+      var clonedCells = JSON.parse(JSON.stringify(cells));
+      var idx = 0;
+      for (var prop in clonedCells) {
+        if (!this.colsVisibility[idx]) {
+          delete clonedCells[prop];
+        }
+        idx++;
+      }
+      return clonedCells
     }
   },
   created: function() {
     this.tracename = this.$route.params.tracename;
-    this.getData({page:1, size:30})
+    this.getData({
+      page: 1,
+      size: 30
+    })
   }
 }
 </script>
@@ -101,12 +168,18 @@ export default {
   flex-flow: column nowrap;
   flex: 1;
 }
+
+.filter-input {
+  width: 256px;
+}
+
 .pagination-padding-area {
   padding-bottom: 56px
 }
+
 .pagination {
-  position:absolute;
-  bottom:0;
-  width:100%;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 </style>
