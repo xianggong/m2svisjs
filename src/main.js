@@ -3,12 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import VueMaterial from 'vue-material'
 
-// Import vue-material CSS file
-import 'vue-material/dist/vue-material.css'
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+import 'element-ui/lib/theme-default/index.css'
 
-Vue.use(VueMaterial)
+Vue.use(ElementUI, { locale })
 
 /* eslint-disable no-new */
 new Vue({
