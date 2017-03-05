@@ -32,7 +32,7 @@ export default new Router({
     {
       path: `/:tracename/timeline`,
       name: `TraceTimeline`,
-      component : TraceStats
+      component : TraceTimeline
     }
   ]
 })
