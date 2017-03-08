@@ -12,11 +12,11 @@
       </el-breadcrumb>
     </el-col>
     <el-col :span="4" class="topbar-setting">
-      <el-button type="primary" @click="setting.isVisible = true">Setting</el-button>
+      <el-button icon="setting" type="primary" @click="setting.isVisible = true">Setting</el-button>
     </el-col>
   </el-row>
 
-  <el-dialog title="Settings" v-model="setting.isVisible">
+  <el-dialog title="Settings" v-model="setting.isVisible" size="small">
     <el-tabs v-model="setting.activeName">
       <el-tab-pane label="Columns" name="columns">
         <el-select v-model="table.checkedCols" multiple placeholder="Select" style="width: 100%">
@@ -75,7 +75,8 @@ export default {
       setting: {
         activeName: 'columns',
         isVisible: false,
-        filters: ''
+        filters: '',
+        isModal: true,
       },
     }
   },
@@ -188,7 +189,6 @@ export default {
   display: flex;
   flex: 1;
   justify-content: flex-end;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px;
 }
 </style>
