@@ -18,13 +18,16 @@ export default {
   data() {
     return {
       options: {
+        title: {
+          text: 'Count: stall in execution unit ',
+          x: 'center'
+        },
         toolbox: {
           feature: {
             magicType: {
               type: ['stack', 'tiled']
             },
           },
-
         },
         tooltip: {
           trigger: 'axis',
@@ -33,6 +36,7 @@ export default {
           }
         },
         legend: {
+          top: "3%",
           // To be loaded
           data: [],
         },
@@ -62,7 +66,7 @@ export default {
   methods: {
     getData() {
       var app = this;
-      var url = "/api/v1/traces/" + app.traceName + "/stall/column";
+      var url = "/api/v1/traces/" + app.traceName + "/stats/stall/column";
       axios.get(url)
         .then(function(response) {
           let data = response.data;
@@ -110,8 +114,8 @@ export default {
 
 .chart {
   flex: 1 1 auto;
-  width: inherit;
-  height: inherit;
+  width: 100%;
+  height: 100%;
   margin: 20px;
 }
 </style>

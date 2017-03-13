@@ -103,7 +103,7 @@ export default {
     },
     getData(params) {
       var app = this;
-      var url = "/api/v1/traces/" + app.tracename + "/data";
+      var url = "/api/v1/traces/" + app.tracename + "/rawdata/data";
       axios.get(url, {
           params: params
         })
@@ -182,7 +182,7 @@ export default {
   flex: 1;
   display: flex;
   justify-content: flex-end;
-  margin-right: 6px;
+  margin: 6px;
 }
 
 .pagination {

@@ -21,7 +21,9 @@
   </el-row>
 
   <div class="chart-area">
-    <chartStall :traceName="tracename"></chartStall>
+    <chartStall :traceName="tracename" style="width: 50%"></chartStall>
+    <!-- <chartInstCount :traceName="tracename" :start="meta.range[0]" :finish="meta.range[1]" :cu=1></chartInstCount> -->
+    <chartExecLen style="width: 50%"></chartExecLen>
   </div>
 
 </div>
@@ -29,25 +31,30 @@
 
 <script>
 import axios from 'axios'
-import chartTraceStall from './Chart/TraceStall'
+import chartStatsStall from './Chart/StatsStall'
+import chartInstCount from './Chart/InstructionCount'
+import chartExecLen from './Chart/TraceExecLen'
 
 export default {
   name: 'm2svis-trace-stats',
   components: {
-    'chartStall': chartTraceStall
+    'chartStall': chartStatsStall,
+    'chartInstCount': chartInstCount,
+    'chartExecLen': chartExecLen,
   },
   data() {
     return {
       tracename: "",
+      activeChart: "overview",
       meta: {
         countInsts: 0,
         countStall: 0,
         countWF: 0,
         countWG: 0,
         countCU: 0,
-        range: [0, 100],
+        range: [0, 10],
         min: 0,
-        max: 100,
+        max: 10,
       }
     }
   },
@@ -64,8 +71,8 @@ export default {
           app.meta.countWG = data.CountWG;
           app.meta.countCU = data.CountCU;
           app.meta.range[0] = data.MinCycle;
-          app.meta.min = data.MinCycle;
           app.meta.range[1] = data.MaxCycle;
+          app.meta.min = data.MinCycle;
           app.meta.max = data.MaxCycle;
         })
         .catch(function(response) {
@@ -125,7 +132,8 @@ export default {
 
 .chart-area {
   display: flex;
+  flex-flow: row nowrap;
+  /* Expand to the remaining of screen */
   flex-grow: 1;
-  /* Expand to remaining screen */
 }
 </style>
