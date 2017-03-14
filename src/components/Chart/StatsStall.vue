@@ -27,7 +27,7 @@ export default {
             magicType: {
               type: ['stack', 'tiled']
             },
-          },
+          }
         },
         tooltip: {
           trigger: 'axis',

@@ -21,9 +21,13 @@
   </el-row>
 
   <div class="chart-area">
-    <chartStall :traceName="tracename" style="width: 50%"></chartStall>
+    <!-- <chartStall :traceName="tracename" style="width: 50%"></chartStall> -->
     <!-- <chartInstCount :traceName="tracename" :start="meta.range[0]" :finish="meta.range[1]" :cu=1></chartInstCount> -->
-    <chartExecLen style="width: 50%"></chartExecLen>
+    <!-- <chartExecLen style="width: 50%"></chartExecLen> -->
+    <chartPie path="/instruction/count/insttype" title="Instructions by type" class="chart-cell"></chartPie>
+    <chartPie path="/instruction/count/execunit" title="Instructions by execution unit" class="chart-cell"></chartPie>
+    <chartPie path="/cycle/count/insttype" title="Cycle by instruction type" class="chart-cell"></chartPie>
+    <chartPie path="/cycle/count/execunit" title="Cycle by execution unit" class="chart-cell"></chartPie>
   </div>
 
 </div>
@@ -34,6 +38,7 @@ import axios from 'axios'
 import chartStatsStall from './Chart/StatsStall'
 import chartInstCount from './Chart/InstructionCount'
 import chartExecLen from './Chart/TraceExecLen'
+import chartPie from './Chart/TracePie'
 
 export default {
   name: 'm2svis-trace-stats',
@@ -41,6 +46,7 @@ export default {
     'chartStall': chartStatsStall,
     'chartInstCount': chartInstCount,
     'chartExecLen': chartExecLen,
+    'chartPie': chartPie,
   },
   data() {
     return {
@@ -132,8 +138,13 @@ export default {
 
 .chart-area {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   /* Expand to the remaining of screen */
   flex-grow: 1;
+}
+
+.chart-cell {
+  width: 50%;
+  height: 50%;
 }
 </style>
