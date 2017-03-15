@@ -1,5 +1,5 @@
 <template>
-<div name="m2svis-chart-pie" class="container">
+<div name="m2svis-chart-pie">
   <chart :options="options" class="chart"></chart>
 </div>
 </template>
@@ -33,15 +33,13 @@ export default {
         },
         legend: {
           top: '6%',
-          // orient: 'vertical',
-          // left: 'left',
           data: [] // Init in methods hook
         },
         series: [{
           name: 'Count',
           type: 'pie',
           radius: '60%',
-          center: ['50%', '50%'],
+          center: ['50%', '55%'],
           data: [], // Init in methods
           itemStyle: {
             emphasis: {
@@ -92,14 +90,9 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  width: inherit;
-  height: inherit;
-}
-
 .chart {
   width: 100%;
   height: 100%;
-  margin: 20px;
+  margin: auto;
 }
 </style>

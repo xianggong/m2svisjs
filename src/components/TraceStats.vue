@@ -16,19 +16,28 @@
         <el-slider v-model="meta.range" range :min="meta.min" :max="meta.max" class="range-slider"></el-slider>
       </el-popover>
       <el-button v-model="meta" v-popover:range type="primary">Range: {{meta.range[0]}} - {{meta.range[1]}}</el-button>
-      <el-button icon="setting">Setting</el-button>
     </div>
   </el-row>
 
-  <div class="chart-area">
-    <!-- <chartStall :traceName="tracename" style="width: 50%"></chartStall> -->
-    <!-- <chartInstCount :traceName="tracename" :start="meta.range[0]" :finish="meta.range[1]" :cu=1></chartInstCount> -->
-    <!-- <chartExecLen style="width: 50%"></chartExecLen> -->
-    <chartPie path="/instruction/count/insttype" title="Instructions by type" class="chart-cell"></chartPie>
-    <chartPie path="/instruction/count/execunit" title="Instructions by execution unit" class="chart-cell"></chartPie>
-    <chartPie path="/cycle/count/insttype" title="Cycle by instruction type" class="chart-cell"></chartPie>
-    <chartPie path="/cycle/count/execunit" title="Cycle by execution unit" class="chart-cell"></chartPie>
-  </div>
+  <el-row class="content">
+    <el-col :span="4" class="left-nav">
+      <el-menu default-active="1">
+        <el-menu-item index="1">Pie Charts</el-menu-item>
+        <el-menu-item index="2">Bar Charts</el-menu-item>
+        <el-menu-item index="3">Setting</el-menu-item>
+      </el-menu>
+    </el-col>
+
+    <el-col :span="20" class="chart-area">
+      <!-- <chartStall :traceName="tracename" style="width: 50%"></chartStall> -->
+      <!-- <chartInstCount :traceName="tracename" :start="meta.range[0]" :finish="meta.range[1]" :cu=1></chartInstCount> -->
+      <!-- <chartExecLen style="width: 50%"></chartExecLen> -->
+      <chartPie path="/instruction/count/insttype" title="Count: instructions type" class="chart-cell"></chartPie>
+      <chartPie path="/instruction/count/execunit" title="Count: execution unit" class="chart-cell"></chartPie>
+      <chartPie path="/cycle/count/insttype" title="Cycle: instruction type" class="chart-cell"></chartPie>
+      <chartPie path="/cycle/count/execunit" title="Cycle: execution unit" class="chart-cell"></chartPie>
+    </el-col>
+  </el-row>
 
 </div>
 </template>
@@ -65,6 +74,12 @@ export default {
     }
   },
   methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
     getTraceMeta() {
       var app = this;
       var url = "/api/v1/traces/" + app.tracename + "/meta";
@@ -136,14 +151,24 @@ export default {
   margin-right: 20px;
 }
 
-.chart-area {
+.content {
   display: flex;
   flex-flow: row wrap;
-  /* Expand to the remaining of screen */
   flex-grow: 1;
 }
 
+.left-nav {
+  background: #E5E9F2;
+}
+
+.chart-area {
+  display: flex;
+  flex-flow: row wrap;
+  background: #F9FAFC;
+}
+
 .chart-cell {
+  padding-top: 10px;
   width: 50%;
   height: 50%;
 }
