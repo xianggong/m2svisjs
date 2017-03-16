@@ -1,5 +1,5 @@
 <template>
-<div id="m2svis-chart-inst-count" class="container">
+<div class="container">
   <chart :options="options" class="chart"></chart>
 </div>
 </template>
@@ -8,7 +8,6 @@
 import axios from 'axios'
 
 export default {
-  name: 'm2svis-chart-inst-count',
   props: {
     traceName: {
       type: String,
@@ -132,12 +131,12 @@ export default {
   flex: 1 1 auto;
   width: inherit;
   height: inherit;
+  margin: 20px;
 }
 
 .chart {
   flex: 1 1 auto;
-  width: inherit;
-  height: inherit;
-  margin: 20px;
+  width: 100%;
+  height: 100%;
 }
 </style>

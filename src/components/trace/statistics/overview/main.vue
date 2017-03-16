@@ -44,7 +44,6 @@ export default {
         series: [{
           name: 'Cycle',
           type: 'bar',
-          barWidth: '60%',
           data: []
         }]
       }

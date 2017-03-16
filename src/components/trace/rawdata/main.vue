@@ -49,14 +49,10 @@
 </template>
 
 <script>
-import Toolbar from "./Toolbar"
 import axios from 'axios'
 
 export default {
   name: 'm2svis-trace-data',
-  components: {
-    'm2svis-toolbar': Toolbar,
-  },
   data: function() {
     return {
       tracename: "",
