@@ -14,15 +14,8 @@ export default {
       tracename: '',
       options: {
         title: {
-          text: 'Count: stall in execution unit ',
+          text: 'Stall count',
           x: 'center'
-        },
-        toolbox: {
-          feature: {
-            magicType: {
-              type: ['stack', 'tiled']
-            },
-          }
         },
         tooltip: {
           trigger: 'axis',
@@ -36,8 +29,8 @@ export default {
           data: [],
         },
         grid: {
-          left: '3%',
-          right: '4%',
+          left: '2%',
+          right: '8%',
           bottom: '3%',
           containLabel: true
         },
@@ -74,6 +67,7 @@ export default {
             series.push({
               name: k,
               type: 'bar',
+              stack: 'total',
               data: data[k]
             })
           }

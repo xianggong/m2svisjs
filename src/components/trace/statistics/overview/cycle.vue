@@ -37,9 +37,6 @@ export default {
         yAxis: [{
           type: 'category',
           data: [],
-          axisTick: {
-            alignWithLabel: true
-          }
         }],
         series: [{
           name: 'Cycle',

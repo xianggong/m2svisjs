@@ -12,7 +12,6 @@
       <template scope="scope">
         <router-link :to="scope.row.table_name + '/rawdata'">Rawdata</router-link>
         <router-link :to="scope.row.table_name + '/statistics'">Statistics</router-link>
-        <router-link :to="scope.row.table_name + '/timeline'">Timeline</router-link>
 </template>
     </el-table-column>
     <el-table-column prop="table_rows" label="# of instructions"></el-table-column>

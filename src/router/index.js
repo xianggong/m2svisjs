@@ -12,6 +12,20 @@ export default new Router({
     {
       path: '/:tracename',
       component: resolve => require(['../components/trace/main.vue'], resolve),
+      children: [
+        {
+          path: 'ocycle',
+          redirect: 'statistics/ocycle',
+        },
+        {
+          path: 'ostall',
+          redirect: 'statistics/ostall',
+        },
+        {
+          path: 'oinstructions',
+          redirect: 'statistics/oinstructions',
+        },
+      ]
     },
     {
       path: '/:tracename/rawdata',
@@ -22,20 +36,24 @@ export default new Router({
       component: resolve => require(['../components/trace/statistics/main.vue'], resolve),
       children: [
         {
-          path: '/',
+          path: '',
           component: resolve => require(['../components/trace/statistics/overview/main.vue'], resolve)
         },
         {
-          path: '/overview',
-          component: resolve => require(['../components/trace/statistics/overview/main.vue'], resolve)
+          path: 'ocycle',
+          component: resolve => require(['../components/trace/statistics/overview/cycle.vue'], resolve)
         },
         {
-          path: '/stall',
-          component: resolve => require(['../components/trace/statistics/stall/main.vue'], resolve)
+          path: 'ostall',
+          component: resolve => require(['../components/trace/statistics/overview/stall.vue'], resolve)
         },
         {
-          path: '/instructions',
-          component: resolve => require(['../components/trace/statistics/instructions/main.vue'], resolve)
+          path: 'oinsts',
+          component: resolve => require(['../components/trace/statistics/overview/insts.vue'], resolve)
+        },
+        {
+          path: 'dinsts',
+          component: resolve => require(['../components/trace/statistics/detail/insts.vue'], resolve)
         }
       ]
     },

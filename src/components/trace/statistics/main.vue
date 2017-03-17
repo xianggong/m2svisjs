@@ -4,17 +4,28 @@
 
   <div class="content">
     <el-col :span="4" class="left-nav">
-      <el-menu default-active="overview" router>
-        <el-menu-item index="overview">Overview</el-menu-item>
-        <el-menu-item index="stall">Stall</el-menu-item>
-        <el-menu-item index="instructions">Instructions</el-menu-item>
+      <el-menu default-active="ocycle" router>
+        <el-submenu index="1">
+          <template slot="title"><i class="el-icon-menu"></i>Overview
+</template>
+          <el-menu-item index="ocycle">Cycle</el-menu-item>
+          <el-menu-item index="ostall">Stall</el-menu-item>
+          <el-menu-item index="oinsts">Instructions</el-menu-item>
+        </el-submenu>
+        <el-submenu index="1">
+          <template slot="title">
+<i class="el-icon-menu"></i>
+Details
+</template>
+          <el-menu-item index="dinsts">Instructions by cycle</el-menu-item>
+        </el-submenu>
+      </el-menu>
+    </el-col>
       </el-menu>
     </el-col>
 
     <el-col :span="20" class="chart-area">
-      <transition name="move" mode="out-in">
-        <router-view></router-view>
-      </transition>
+      <router-view></router-view>
     </el-col>
   </div>
 

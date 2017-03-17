@@ -9,15 +9,13 @@ import axios from 'axios'
 
 export default {
   props: {
-    traceName: {
-      type: String,
-      required: true
-    },
     start: {
       type: Number,
+      default: 1,
     },
     finish: {
       type: Number,
+      default: 1000,
     },
     windowSize: {
       type: Number,
@@ -30,6 +28,7 @@ export default {
   },
   data() {
     return {
+      tracename: '',
       options: {
         tooltip: {
           trigger: 'axis',
@@ -95,7 +94,7 @@ export default {
     },
     getData() {
       var app = this;
-      var url = "/api/v1/traces/" + app.traceName + "/instruction/active";
+      var url = "/api/v1/traces/" + app.tracename + "/instruction/active";
 
       var params = this.getParams();
 
@@ -112,15 +111,8 @@ export default {
         })
     }
   },
-  watch: {
-    start: function(newStart) {
-      this.getData()
-    },
-    finish: function(newFinish) {
-      this.getData()
-    }
-  },
   created() {
+    this.tracename = this.$route.params.tracename;
     this.getData();
   }
 }
