@@ -1,6 +1,6 @@
 <template>
 <div id="m2s-chart-exec-len" class="container">
-  <chart :options="options" class="chart"></chart>
+  <chart :options="options" auto-resize class="chart"></chart>
 </div>
 </template>
 

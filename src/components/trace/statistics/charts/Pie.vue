@@ -1,6 +1,6 @@
 <template>
 <div name="m2svis-chart-pie">
-  <chart :options="options" class="chart"></chart>
+  <chart :options="options" auto-resize class="chart"></chart>
 </div>
 </template>
 

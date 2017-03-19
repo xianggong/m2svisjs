@@ -1,6 +1,6 @@
 <template>
 <div id="m2svis-chart-stall" class="container">
-  <chart :options="options" class="chart"></chart>
+  <chart :options="options" auto-resize class="chart"></chart>
 </div>
 </template>
 

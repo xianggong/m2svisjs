@@ -1,6 +1,32 @@
 <template>
 <div class="container">
-  <chart :options="options" class="chart"></chart>
+  <el-form :inline="true" :model="setting" class="demo-form-inline">
+    <el-form-item label="Cycle range:">
+      <el-input v-model="setting.start" :disabled="setting.refresh.disabled" placeholder="Cycle range start"></el-input>
+    </el-form-item>
+    <el-form-item label="to">
+      <el-input v-model="setting.finish" :disabled="setting.refresh.disabled" placeholder="Cycle range end"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button-group>
+        <el-button type="primary" @click="prevRange" :disabled="setting.refresh.disabled" icon="arrow-left">Previous Cycle Range</el-button>
+        <el-button type="primary" @click="nextRange" :disabled="setting.refresh.disabled">Next Cycle Range<i class="el-icon-arrow-right el-icon-right"></i></el-button>
+      </el-button-group>
+    </el-form-item>
+    <el-form-item label="Window size">
+      <el-input v-model="setting.windowSize" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
+    </el-form-item>
+    <el-form-item label="Top Chart">
+      <el-input v-model="setting.cuTop" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
+    </el-form-item>
+    <el-form-item label="Bottom Chart">
+      <el-input v-model="setting.cuBottom" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="refresh" :disabled="setting.refresh.disabled">{{setting.refresh.text}}</el-button>
+    </el-form-item>
+  </el-form>
+  <chart :options="options" auto-resize ref="bar" class="chart"></chart>
 </div>
 </template>
 
@@ -8,37 +34,40 @@
 import axios from 'axios'
 
 export default {
-  props: {
-    start: {
-      type: Number,
-      default: 1,
-    },
-    finish: {
-      type: Number,
-      default: 1000,
-    },
-    windowSize: {
-      type: Number,
-      default: 0
-    },
-    cu: {
-      type: Number,
-      default: -1
-    }
-  },
   data() {
     return {
       tracename: '',
+      meta: {
+        length: 0,
+        cu: [],
+      },
+      setting: {
+        start: 1,
+        finish: 1000,
+        windowSize: 1,
+        cuTop: 0,
+        cuBottom: 1,
+        prevRange: {
+          disabled: false,
+        },
+        nextRange: {
+          disabled: false,
+        },
+        refresh: {
+          text: 'Refresh',
+          disabled: false,
+        }
+      },
       options: {
         tooltip: {
           trigger: 'axis',
           confine: true,
-          position: function(pt) {
-            return [pt[0], '10%'];
+          axisPointer: {
+            type: 'shadow'
           }
         },
         title: {
-          text: 'Number of unfinished instructions',
+          text: 'Number of active instructions',
         },
         toolbox: {
           feature: {
@@ -48,72 +77,200 @@ export default {
             restore: {},
           }
         },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: []
+        legend: {
+          data: [],
         },
-        yAxis: {
-          type: 'value',
-          boundaryGap: [0, '100%']
-        },
-        dataZoom: [{
-          type: 'inside',
-          start: 0,
-          end: 10
-        }, {
-          start: 0,
-          end: 10,
-        }],
-        series: [{
-          name: 'Count of instructions',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          sampling: 'average',
-          itemStyle: {
-            normal: {
-              color: 'rgb(255, 70, 131)'
-            }
+        grid: [{
+            left: 50,
+            right: 50,
+            height: '35%'
           },
-          data: []
-        }]
+          {
+            left: 50,
+            right: 50,
+            top: '55%',
+            height: '35%'
+          }
+        ],
+        xAxis: [{
+            name: 'Cycle',
+            gridIndex: 0,
+            type: 'category',
+            data: [],
+          },
+          {
+            name: 'Cycle',
+            gridIndex: 1,
+            type: 'category',
+            data: []
+          }
+        ],
+        yAxis: [{
+            name: 'Count',
+            gridIndex: 0,
+            type: 'value',
+          },
+          {
+            name: 'Count',
+            gridIndex: 1,
+            type: 'value',
+          }
+        ],
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 10,
+            xAxisIndex: [0, 1]
+          },
+          {
+            start: 0,
+            end: 10,
+            xAxisIndex: [0, 1]
+          },
+        ],
+        series: []
       }
     }
   },
   methods: {
-    getParams() {
-      var params = {
-        start: this.start,
-        finish: this.finish,
-        windowSize: this.windowSize,
-        cu: this.cu
-      }
-
-      return params;
-    },
-    getData() {
+    getTraceMeta() {
       var app = this;
-      var url = "/api/v1/traces/" + app.tracename + "/instruction/active";
+      var url = "/api/v1/traces/" + app.tracename + "/meta";
+      axios.get(url)
+        .then(function(response) {
+          let data = response.data;
+          app.meta.length = data.MaxCycle;
+          app.meta.numCU = data.CountCU;
+        })
+        .catch(function(response) {
+          console.log(response);
+        })
+    },
+    getTopData() {
+      var app = this;
+      var url = "/api/v1/traces/" + app.tracename + "/insts/active";
 
-      var params = this.getParams();
+      let params = {
+        start: app.setting.start,
+        finish: app.setting.finish,
+        windowSize: app.setting.windowSize,
+        cu: app.setting.cuTop,
+      };
+      axios.get(url, {
+          params
+        })
+        .then(function(response) {
+          let data = response.data;
+
+          // Setup xAxis
+          app.options.xAxis[0].data = data.Cycle;
+
+          // Setup series
+          for (var key in data) {
+            if (key != "Cycle") {
+              app.options.legend.data.push(key);
+              let obj = {
+                name: key,
+                type: 'bar',
+                stack: 'top',
+                animation: false,
+                xAxisIndex: 0,
+                yAxisIndex: 0,
+                smooth: true,
+                symbol: 'none',
+                sampling: 'average',
+                data: data[key],
+              }
+              app.options.series.push(obj);
+            }
+          }
+        })
+        .catch(function(response) {
+          console.log(response);
+        })
+    },
+    getBottomData() {
+      var app = this;
+      var url = "/api/v1/traces/" + app.tracename + "/insts/active";
+
+      let params = {
+        start: app.setting.start,
+        finish: app.setting.finish,
+        windowSize: app.setting.windowSize,
+        cu: app.setting.cuBottom,
+      };
 
       axios.get(url, {
           params
         })
         .then(function(response) {
           let data = response.data;
-          app.options.xAxis.data = data.cycle
-          app.options.series[0].data = data.count;
+
+          // Setup xAxis
+          app.options.xAxis[1].data = data.Cycle;
+
+          // Setup series
+          for (var key in data) {
+            if (key != "Cycle") {
+              let obj = {
+                name: key,
+                type: 'bar',
+                stack: 'bottom',
+                animation: false,
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                smooth: true,
+                symbol: 'none',
+                sampling: 'average',
+                data: data[key],
+              }
+              app.options.series.push(obj);
+            }
+          }
+
+          app.setting.refresh.text = "Refresh";
+          app.setting.refresh.disabled = false;
+
+          let bar = app.$refs.bar;
+          bar.hideLoading();
         })
         .catch(function(response) {
           console.log(response);
         })
+    },
+    getData() {
+      let bar = this.$refs.bar
+      bar.showLoading({
+        text: 'Loading',
+        color: '#4ea397',
+        maskColor: 'rgba(255, 255, 255, 0.4)'
+      })
+
+      this.setting.refresh.disabled = true;
+      this.setting.refresh.text = "Loading...";
+
+      this.options.legend.data = [];
+      this.options.series = [];
+      this.getTopData();
+      this.getBottomData();
+    },
+    refresh() {
+      this.getData();
+    },
+    nextRange() {
+      let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
+      this.setting.start = this.setting.finish * 1 + 1;
+      this.setting.finish = this.setting.finish * 1 + len;
+    },
+    prevRange() {
+      let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
+      this.setting.start = this.setting.start * 1 - len;
+      this.setting.finish = this.setting.finish * 1 - len;
     }
   },
   created() {
     this.tracename = this.$route.params.tracename;
-    this.getData();
+    this.getTraceMeta();
   }
 }
 </script>
