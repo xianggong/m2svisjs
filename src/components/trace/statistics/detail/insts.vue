@@ -1,29 +1,44 @@
 <template>
 <div class="container">
-  <el-form :inline="true" :model="setting" class="demo-form-inline">
-    <el-form-item label="Cycle range:">
-      <el-input v-model="setting.start" :disabled="setting.refresh.disabled" placeholder="Cycle range start"></el-input>
-    </el-form-item>
-    <el-form-item label="to">
-      <el-input v-model="setting.finish" :disabled="setting.refresh.disabled" placeholder="Cycle range end"></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button-group>
-        <el-button type="primary" @click="prevRange" :disabled="setting.refresh.disabled" icon="arrow-left">Previous Cycle Range</el-button>
-        <el-button type="primary" @click="nextRange" :disabled="setting.refresh.disabled">Next Cycle Range<i class="el-icon-arrow-right el-icon-right"></i></el-button>
-      </el-button-group>
-    </el-form-item>
-    <el-form-item label="Window size">
-      <el-input v-model="setting.windowSize" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
-    </el-form-item>
-    <el-form-item label="Top Chart">
-      <el-input v-model="setting.cuTop" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
-    </el-form-item>
-    <el-form-item label="Bottom Chart">
-      <el-input v-model="setting.cuBottom" :disabled="setting.refresh.disabled" placeholder="1"></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="refresh" :disabled="setting.refresh.disabled">{{setting.refresh.text}}</el-button>
+  <el-form :model="setting" label-width="50px">
+    <el-form-item label="From">
+      <el-col :span="3">
+        <el-input v-model="setting.start" :max="meta.length" :disabled="setting.refresh.disabled" placeholder="1">
+          <a slot="prepend">cycle</a>
+        </el-input>
+      </el-col>
+      <el-col :span="1" style="text-align: center">to</el-col>
+      <el-col :span="3">
+        <el-input v-model="setting.finish" :max="meta.length" :disabled="setting.refresh.disabled" placeholder="1000">
+          <a slot="prepend">cycle</a>
+        </el-input>
+      </el-col>
+      <el-col :span="1" style="text-align: center">with</el-col>
+      <el-col :span="3">
+        <el-input v-model="setting.windowSize" :disabled="setting.refresh.disabled" placeholder="1">
+          <a slot="prepend">bin size</a>
+        </el-input>
+      </el-col>
+      <el-col :span="2" style="text-align: center">display</el-col>
+      <el-col :span="2">
+        <el-input v-model="setting.cuTop" :disabled="setting.refresh.disabled" placeholder="0">
+          <a slot="prepend">cu</a>
+        </el-input>
+      </el-col>
+      <el-col :span="1" style="text-align: center">and</el-col>
+      <el-col :span="2">
+        <el-input v-model="setting.cuBottom" :disabled="setting.refresh.disabled" placeholder="1">
+          <a slot="prepend">cu</a>
+        </el-input>
+      </el-col>
+      <el-col :span="1" style="text-align: center">&nbsp</el-col>
+      <el-col :span="5">
+        <el-button-group>
+          <el-button type="primary" @click="prevRange" :disabled="setting.refresh.disabled" icon="arrow-left"></el-button>
+          <el-button type="primary" @click="nextRange" :disabled="setting.refresh.disabled" icon="arrow-right"></el-button>
+          <el-button type="primary" @click="refresh" :disabled="setting.refresh.disabled">{{setting.refresh.text}}</el-button>
+        </el-button-group>
+      </el-col>
     </el-form-item>
   </el-form>
   <chart :options="options" auto-resize ref="bar" class="chart"></chart>
@@ -42,6 +57,7 @@ export default {
         cu: [],
       },
       setting: {
+        visible: true,
         start: 1,
         finish: 1000,
         windowSize: 1,
@@ -53,6 +69,7 @@ export default {
         nextRange: {
           disabled: false,
         },
+        immediate: false,
         refresh: {
           text: 'Refresh',
           disabled: false,
@@ -67,7 +84,7 @@ export default {
           }
         },
         title: {
-          text: 'Number of active instructions',
+          text: 'Active instructions',
         },
         toolbox: {
           feature: {
@@ -176,9 +193,6 @@ export default {
                 animation: false,
                 xAxisIndex: 0,
                 yAxisIndex: 0,
-                smooth: true,
-                symbol: 'none',
-                sampling: 'average',
                 data: data[key],
               }
               app.options.series.push(obj);
@@ -219,9 +233,6 @@ export default {
                 animation: false,
                 xAxisIndex: 1,
                 yAxisIndex: 1,
-                smooth: true,
-                symbol: 'none',
-                sampling: 'average',
                 data: data[key],
               }
               app.options.series.push(obj);
@@ -261,11 +272,17 @@ export default {
       let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
       this.setting.start = this.setting.finish * 1 + 1;
       this.setting.finish = this.setting.finish * 1 + len;
+      if (this.setting.immediate) {
+        this.refresh();
+      }
     },
     prevRange() {
       let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
       this.setting.start = this.setting.start * 1 - len;
       this.setting.finish = this.setting.finish * 1 - len;
+      if (this.setting.immediate) {
+        this.refresh();
+      }
     }
   },
   created() {
