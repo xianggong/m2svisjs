@@ -34,8 +34,8 @@
   </el-dialog>
 
   <el-table :data="table.data" height="960" border>
-    <el-table-column v-for="col in table.checkedCols" v-if="col != 'Asm'" :prop="col" :label="col"></el-table-column>
-    <el-table-column v-else :prop="col" label="[WG-WF] instruction" show-overflow-tooltip width="300px" fixed="left"></el-table-column>
+    <el-table-column v-for="col in table.checkedCols" v-if="col != 'Assembly'" :prop="col" :label="col"></el-table-column>
+    <el-table-column v-else :prop="col" label="Instruction" show-overflow-tooltip width="300px" fixed="left"></el-table-column>
   </el-table>
 
   <el-row>
@@ -186,5 +186,6 @@ export default {
   flex: 1;
   justify-content: flex-end;
   margin: 10px;
+  padding-right: 10px;
 }
 </style>

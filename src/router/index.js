@@ -54,6 +54,10 @@ export default new Router({
         {
           path: 'dinsts',
           component: resolve => require(['../components/trace/statistics/detail/insts.vue'], resolve)
+        },
+        {
+          path: 'dutil',
+          component: resolve => require(['../components/trace/statistics/detail/utilization.vue'], resolve)
         }
       ]
     },

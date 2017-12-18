@@ -43,7 +43,8 @@ export default {
           type: 'bar',
           data: [],
           markPoint: {
-            symbolRotate: '-90',
+            symbol: 'diamond',
+            symbolOffset: [50, 0],
             data: [{
                 type: 'max',
                 name: 'Max'
@@ -53,6 +54,11 @@ export default {
                 name: 'Min'
               }
             ]
+          },
+          label: {
+            normal: {
+              show: true,
+            }
           },
         }]
       }

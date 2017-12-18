@@ -35,9 +35,11 @@ export default {
           containLabel: true
         },
         xAxis: [{
+          name: 'Count',
           type: 'value'
         }],
         yAxis: [{
+          name: 'Compute Unit',
           type: 'category',
           axisTick: {
             show: false

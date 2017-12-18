@@ -3,13 +3,13 @@
   <el-form :model="setting" label-width="50px">
     <el-form-item label="From">
       <el-col :span="3">
-        <el-input v-model="setting.start" :max="meta.length" :disabled="setting.refresh.disabled" placeholder="1">
+        <el-input v-model="setting.start" :disabled="setting.refresh.disabled">
           <a slot="prepend">cycle</a>
         </el-input>
       </el-col>
       <el-col :span="1" style="text-align: center">to</el-col>
       <el-col :span="3">
-        <el-input v-model="setting.finish" :max="meta.length" :disabled="setting.refresh.disabled" placeholder="1000">
+        <el-input v-model="setting.finish" :disabled="setting.refresh.disabled">
           <a slot="prepend">cycle</a>
         </el-input>
       </el-col>
@@ -156,8 +156,11 @@ export default {
       axios.get(url)
         .then(function(response) {
           let data = response.data;
-          app.meta.length = data.MaxCycle;
+          app.meta.minCycle = data.MinCycle;
+          app.meta.maxCycle = data.MaxCycle;
           app.meta.numCU = data.CountCU;
+          app.setting.start = data.MinCycle;
+          app.setting.finish = data.MinCycle + 1000;
         })
         .catch(function(response) {
           console.log(response);
@@ -269,20 +272,38 @@ export default {
       this.getData();
     },
     nextRange() {
-      let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
-      this.setting.start = this.setting.finish * 1 + 1;
-      this.setting.finish = this.setting.finish * 1 + len;
-      if (this.setting.immediate) {
-        this.refresh();
-      }
+      let start = this.setting.start;
+      let finish = this.setting.finish;
+      let maxCycle = this.meta.maxCycle;
+      let rangeLen = finish * 1 - start * 1 + 1;
+
+      let next_start = start * 1 + rangeLen;
+      let next_finish = finish * 1 + rangeLen;
+
+      next_start = next_start <= 0 ? 1 : next_start;
+      next_start = next_start >= maxCycle ? start : next_start;
+      next_finish = next_finish <= 0 ? finish : next_finish;
+      next_finish = next_finish >= maxCycle ? maxCycle : next_finish;
+
+      this.setting.start = next_start;
+      this.setting.finish = next_finish;
     },
     prevRange() {
-      let len = this.setting.finish * 1 - this.setting.start * 1 + 1;
-      this.setting.start = this.setting.start * 1 - len;
-      this.setting.finish = this.setting.finish * 1 - len;
-      if (this.setting.immediate) {
-        this.refresh();
-      }
+      let start = this.setting.start;
+      let finish = this.setting.finish;
+      let maxCycle = this.meta.maxCycle;
+      let rangeLen = finish * 1 - start * 1 + 1;
+
+      let next_start = start * 1 - rangeLen;
+      let next_finish = finish * 1 - rangeLen;
+
+      next_start = next_start <= 0 ? 1 : next_start;
+      next_start = next_start >= maxCycle ? maxCycle : next_start;
+      next_finish = next_finish <= 0 ? finish : next_finish;
+      next_finish = next_finish >= maxCycle ? maxCycle : next_finish;
+
+      this.setting.start = next_start;
+      this.setting.finish = next_finish;
     }
   },
   created() {

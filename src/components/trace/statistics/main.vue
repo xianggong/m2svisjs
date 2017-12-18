@@ -6,22 +6,19 @@
     <el-col :span="4" class="left-nav">
       <el-menu default-active="ocycle" router>
         <el-submenu index="1">
-          <template slot="title"><i class="el-icon-menu"></i>Overview
-</template>
+          <a slot="title"><i class="el-icon-menu"></i>Compute Unit</a>
           <el-menu-item index="ocycle">Cycle</el-menu-item>
           <el-menu-item index="ostall">Stall</el-menu-item>
-          <el-menu-item index="oinsts">Instructions</el-menu-item>
+          <el-menu-item index="dutil">Utilization</el-menu-item>
         </el-submenu>
-        <el-submenu index="1">
-          <template slot="title">
-<i class="el-icon-menu"></i>
-Details
-</template>
-          <el-menu-item index="dinsts">Instructions by cycle</el-menu-item>
+        <el-submenu index="2">
+          <a slot="title"><i class="el-icon-menu"></i>Instruction</a>
+          <el-menu-item index="oinsts">Overview</el-menu-item>
+          <el-menu-item index="dinsts">Timeline</el-menu-item>
         </el-submenu>
       </el-menu>
     </el-col>
-      </el-menu>
+    </el-menu>
     </el-col>
 
     <el-col :span="20" class="chart-area">
@@ -40,11 +37,11 @@ export default {
   components: {
     'm2svis-header': Header,
   },
-  computed: {
-    onRoutes() {
-      return this.$route.path
-    }
-  }
+  // computed: {
+  //   onRoutes() {
+  //     return this.$route.path
+  //   }
+  // }
 }
 </script>
 
