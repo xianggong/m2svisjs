@@ -15,6 +15,7 @@
           <a slot="title"><i class="el-icon-menu"></i>Instruction</a>
           <el-menu-item index="oinsts">Overview</el-menu-item>
           <el-menu-item index="dinsts">Timeline</el-menu-item>
+          <el-menu-item index="dwave">Wavefront</el-menu-item>
         </el-submenu>
       </el-menu>
     </el-col>

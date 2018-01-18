@@ -58,6 +58,10 @@ export default new Router({
         {
           path: 'dutil',
           component: resolve => require(['../components/trace/statistics/detail/utilization.vue'], resolve)
+        },
+        {
+          path: 'dwave',
+          component: resolve => require(['../components/trace/statistics/detail/wavefront.vue'], resolve)
         }
       ]
     },
